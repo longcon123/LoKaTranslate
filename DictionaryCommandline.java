@@ -1,21 +1,25 @@
+import java.io.IOException;
+
 public class DictionaryCommandline {
-    static Dictionary dic = new Dictionary();
+    static Dictionary newDic = new Dictionary();
+    static DictionaryManagements dicMan = new DictionaryManagements(newDic);
     public static void showAllWords() {
         System.out.println("No ||English    |Vietnamese");
-        for(int i = 0; i < dic.getSize(); i++) {
-            String vi = dic.getWords(i).word_target;
-            System.out.print(i+"  |"+vi);
+        for(int i = 0; i < dicMan.dic.getSize(); i++) {
+            String vi = dicMan.dic.getWords(i).getWord_target();
+            System.out.print(i+1 + "  |"+vi);
             for(int j = vi.length(); j < 15; j++) {
                 System.out.print(" ");
             }
-            System.out.println("|"+dic.getWords(i).word_explain);
+            System.out.println("|"+dicMan.dic.getWords(i).getWord_explain());
         }
     }
     public static void dictionaryBasic() {
-        DictionaryManagements.insertFromCommandline(dic);
+        dicMan.insertFromCommandline();
         showAllWords();
     }
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
+        //dicMan.insertFromFile();
         dictionaryBasic();
     }
 }
