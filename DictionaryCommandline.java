@@ -1,7 +1,5 @@
-//import java.io.IOException;
-
 public class DictionaryCommandline extends DictionaryManagements{
-    public static void showAllWords() {
+    /**public static void showAllWords() {
         System.out.println("No ||English    |Vietnamese");
         for(int i = 0; i < getSize(); i++) {
             String vi = getWord(i);
@@ -11,13 +9,14 @@ public class DictionaryCommandline extends DictionaryManagements{
             }
             System.out.println("|" + getWordDefi(i));
         }
-    }
+    }*/
     public static void dictionaryBasic() {
-        insertFromCommandline();
-        showAllWords();
+        //insertFromCommandline();
+        //showAllWords();
     }
-    public static void main(String[] args)  {
-        //dicMan.insertFromFile();
-        dictionaryBasic();
-    }
+   /** public static void main(String[] args) throws IOException {
+        insertFromFile();
+        searchWord();
+        //dictionaryBasic();
+    }*/
 }
