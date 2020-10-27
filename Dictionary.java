@@ -295,4 +295,34 @@ public class Dictionary {
             }
         }
     }
+    public void clear() {
+        data.clear();
+        a.clear();
+        b.clear();
+        c.clear();
+        d.clear();
+        e.clear();
+        f.clear();
+        g.clear();
+        h.clear();
+        i.clear();
+        j.clear();
+        k.clear();
+        l.clear();
+        m.clear();
+        n.clear();
+        o.clear();
+        p.clear();
+        q.clear();
+        r.clear();
+        s.clear();
+        t.clear();
+        u.clear();
+        v.clear();
+        w.clear();
+        x.clear();
+        y.clear();
+        z.clear();
+        other.clear();
+    }
 }
