@@ -35,8 +35,8 @@ public class DictionaryManagements {
         return dic.getSizeMap();
     }
     //int i = 0;
-    public void insertFromFile() throws IOException {
-        FileReader fis = new FileReader("D:\\BTL_Dictionary\\src\\main\\resources\\E_V.txt");
+    public void insertFromFile(String path) throws IOException {
+        FileReader fis = new FileReader(path);
         BufferedReader br = new BufferedReader(fis);
         FileReader fis1 = new FileReader("D:\\BTL_Dictionary\\src\\main\\resources\\fixE-V.txt");
         BufferedReader br1 = new BufferedReader(fis1);
@@ -45,8 +45,8 @@ public class DictionaryManagements {
         while ((line = br.readLine()) != null) {
             String[] split = line.split("<html>");
             //System.out.println(split[0]);
-            Word word = new Word(split[0],"<html>" + split[1]);
-            dic.addMap(split[0], word);
+            Word word = new Word(split[0].toLowerCase(),"<html>" + split[1]);
+            dic.addMap(split[0].toLowerCase(), word);
             dic.addList(word);
         }
         while ((line1 = br1.readLine()) != null) {
@@ -202,6 +202,9 @@ public class DictionaryManagements {
                 e.printStackTrace();
             }
         }
+    }
+    public void clearData() {
+        dic.clear();
     }
     public boolean wordIsContain(String word) {
         return dic.mapIsContain(word);
