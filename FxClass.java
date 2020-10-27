@@ -1,7 +1,5 @@
 import com.gtranslate.Language;
-import com.sun.webkit.WebPage;
 import javafx.application.Application;
-import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
@@ -21,36 +19,42 @@ import javafx.scene.web.HTMLEditor;
 import javafx.scene.web.WebEngine;
 import javafx.scene.web.WebView;
 import javafx.stage.Stage;
-import java.io.BufferedWriter;
-import java.lang.annotation.ElementType;
-import java.lang.reflect.Field;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import javafx.scene.layout.*;
-import javafx.geometry.*;
-import javafx.scene.paint.*;
 import javafx.collections.FXCollections;
 import javafx.stage.WindowEvent;
-
 import java.util.Map;
 
 public class FXClass extends Application {
     private DictionaryManagements dm = new DictionaryManagements();
     private testApi api = new testApi();
     private String oldW;
+    private String lang = "en";
     private boolean add = false;
     private boolean sence2 = false;
+    private boolean dich = false;
+    private boolean vi = false;
+    private boolean en = true;
     List<String> historySearch = new ArrayList<>();
     private Parent scene1() {
         AnchorPane root = new AnchorPane();
         root.setPrefSize(640,541);
-        BackgroundImage myBI= new BackgroundImage(new Image("intro.png"),
+        BackgroundImage bgi1 = new BackgroundImage(new Image("intro.png"),
                 BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
                 BackgroundSize.DEFAULT);
+        Image speaker = new Image("speaker.png");
+        Image swap = new Image("swap1.png");
+        BackgroundImage bgi2 = new BackgroundImage(new Image("translate.png"),
+                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
+                BackgroundSize.DEFAULT);
+        Background bg1 = new Background(bgi1);
         //BackgroundFill bgf = new BackgroundFill(Color.PINK, CornerRadii.EMPTY, Insets.EMPTY);
-        Background bg = new Background(myBI);
-        root.setBackground(bg);
+        Background bg2 = new Background(bgi2);
+        root.setBackground(bg1);
         WebView webView = new WebView();
         WebEngine webEngine = webView.getEngine();
         webView.setPrefSize(606, 385);
@@ -93,10 +97,21 @@ public class FXClass extends Application {
         newWordText.setPrefWidth(200);
         newWordText.setVisible(false);
         ImageView speakerIcon = new ImageView(speakerImg);
+        Button sw = new Button("Vi-En");
+        sw.setLayoutX(175);
+        sw.setLayoutY(0);
+        sw.setPrefSize(80, 30);
+        sw.setStyle("-fx-background-color: transparent;");
+        Button buttonTranslate = new Button("Lokabi Dịch");
+        buttonTranslate.setLayoutX(300);
+        buttonTranslate.setLayoutY(0);
+        buttonTranslate.setPrefSize(80, 30);
+        buttonTranslate.setStyle("-fx-background-color: transparent;");
         Button buttonSpeaker = new Button("", speakerIcon);
         buttonSpeaker.setLayoutX(400);
         buttonSpeaker.setLayoutY(143);
         buttonSpeaker.setPrefSize(20, 20);
+        buttonSpeaker.setStyle("-fx-background-color: transparent;");
         buttonSpeaker.setVisible(false);
         ImageView backIcon = new ImageView(backImg);
         Button buttonBack1 = new Button("Back", backIcon);
@@ -104,6 +119,7 @@ public class FXClass extends Application {
         buttonBack1.setLayoutX(0);
         buttonBack1.setLayoutY(0);
         buttonBack1.setPrefSize(70, 20);
+        buttonBack1.setStyle("-fx-background-color: transparent;");
         buttonBack1.setVisible(false);
         Button buttonHist = new Button("History");
         buttonHist.setFont(Font.font(11));
@@ -120,12 +136,14 @@ public class FXClass extends Application {
         buttonFix.setLayoutX(450);
         buttonFix.setLayoutY(143);
         buttonFix.setPrefSize(70, 30);
+        buttonFix.setStyle("-fx-background-color: transparent;");
         buttonFix.setVisible(false);
         Button buttonAdd = new Button("Thêm", addIcon);
         buttonAdd.setFont(Font.font(9));
         buttonAdd.setLayoutX(530);
         buttonAdd.setLayoutY(143);
         buttonAdd.setPrefSize(70, 30);
+        buttonAdd.setStyle("-fx-background-color: transparent;");
         buttonAdd.setVisible(false);
         Button buttonOk = new Button("Ok");
         buttonOk.setFont(Font.font(11));
@@ -150,7 +168,6 @@ public class FXClass extends Application {
         htmlEditor.setLayoutX(9);
         htmlEditor.setLayoutY(265);
         htmlEditor.setVisible(false);
-
         root.addEventHandler(MouseEvent.MOUSE_PRESSED, new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -191,6 +208,8 @@ public class FXClass extends Application {
         listView.setOnMouseClicked(new EventHandler<MouseEvent>(){
             @Override
             public void handle(MouseEvent event) {
+                sw.setVisible(false);
+                buttonTranslate.setVisible(false);
                 buttonSpeaker.setVisible(true);
                 buttonHist.setLayoutX(280);
                 buttonHist.setLayoutY(70);
@@ -237,6 +256,8 @@ public class FXClass extends Application {
         button.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
+                sw.setVisible(false);
+                buttonTranslate.setVisible(false);
                 if (!field.getText().isEmpty()) {
                     buttonBack1.setVisible(true);
                     appIcon.setVisible(false);
@@ -358,6 +379,7 @@ public class FXClass extends Application {
                     listView.getItems().removeAll(listView.getItems());
                     listView.getItems().addAll(historySearch);
                     listView.setVisible(true);
+                    buttonTranslate.setVisible(false);
                 }
 
             }
@@ -366,6 +388,8 @@ public class FXClass extends Application {
         root.setOnKeyPressed(new EventHandler<KeyEvent>() {
             @Override
             public void handle(KeyEvent event) {
+                sw.setVisible(false);
+                buttonTranslate.setVisible(false);
                 if(event.getCode() == KeyCode.ENTER) {
                     if (event.getTarget() == field && !field.getText().isEmpty()) {
                         buttonBack1.setVisible(true);
@@ -437,6 +461,8 @@ public class FXClass extends Application {
                     add = false;
                 }
                 else {
+                    sw.setVisible(true);
+                    buttonTranslate.setVisible(true);
                     buttonSpeaker.setVisible(false);
                     field.setLayoutX(145);
                     field.setLayoutY(217);
@@ -468,53 +494,68 @@ public class FXClass extends Application {
                 //api.translate("vi", "en", "Con chó");
                 System.out.println(oldW);
                 try {
-                    api.tts(oldW, Language.ENGLISH);
+                    api.tts(oldW, lang);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-        root.getChildren().addAll(
-                field ,button, buttonHist, sIcon, micIcon
-                , webView, buttonSpeaker, listView, htmlEditor
-                , buttonFix, buttonAdd, buttonOk, buttonCancel
-                , newWordText, buttonBack1
-        );
-        return root;
-    }
-    private Parent scene2() {
-        AnchorPane root = new AnchorPane();
-        root.setPrefSize(640,541);
-        //all image:
-        Image speaker = new Image("speaker.png");
-        Image swap = new Image("swap1.png");
 
-        BackgroundImage myBI= new BackgroundImage(new Image("translate.png"),
-                BackgroundRepeat.REPEAT, BackgroundRepeat.NO_REPEAT, BackgroundPosition.DEFAULT,
-                BackgroundSize.DEFAULT);
-        Background bg = new Background(myBI);
-        root.setBackground(bg);
-        Text t = new Text("ok");
+        sw.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(en) {
+                    try {
+                        dm.clearData();
+                        dm.insertFromFile("D:\\BTL_Dictionary\\src\\main\\resources\\V_E.txt");
+                        System.out.println("vi");
+                        en = false;
+                        vi = true;
+                        lang = "vi";
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+                else if(vi) {
+                    try {
+                        dm.clearData();
+                        dm.insertFromFile("D:\\BTL_Dictionary\\src\\main\\resources\\E_V.txt");
+                        System.out.println("en");
+                        vi = false;
+                        en = true;
+                        lang = "en";
+                    }
+                    catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
         Button transBt = new Button("Dịch");
         transBt.setLayoutX(565);
         transBt.setLayoutY(265);
         transBt.setStyle("-fx-background-color: transparent; -fx-text-fill: darkslateblue; -fx-font-size: 13pt;");
+        transBt.setVisible(false);
         Button speakerBt1 = new Button("",new ImageView(speaker));
         speakerBt1.setLayoutX(25);
         speakerBt1.setLayoutY(71);
         speakerBt1.setStyle("-fx-background-color: transparent;");
+        speakerBt1.setVisible(false);
         Button speakerBt2 = new Button("",new ImageView(speaker));
         speakerBt2.setLayoutX(25);
         speakerBt2.setLayoutY(305);
         speakerBt2.setStyle("-fx-background-color: transparent;");
+        speakerBt2.setVisible(false);
         Button swapBt = new Button("",new ImageView(swap));
         swapBt.setLayoutX(310);
         swapBt.setLayoutY(42);
         swapBt.setStyle("-fx-background-color: transparent;");
+        swapBt.setVisible(false);
         Map<String, String> lang = new HashMap<>();
         lang.put("Tiếng Anh","en");
         lang.put("Tiếng Việt","vi");
-        lang.put("Tiếng Trung","zh-CN");
+        //lang.put("Tiếng Trung","zh-CN");
         lang.put("Tiếng Nga","ru");
         lang.put("Tiếng Pháp","fr");
         lang.put("Tiếng Ý","it");
@@ -524,7 +565,7 @@ public class FXClass extends Application {
         List<String> listLang = new ArrayList<>();
         listLang.add("Tiếng Anh");
         listLang.add("Tiếng Việt");
-        listLang.add("Tiếng Trung");
+        //listLang.add("Tiếng Trung");
         listLang.add("Tiếng Nga");
         listLang.add("Tiếng Pháp");
         listLang.add("Tiếng Ý");
@@ -537,35 +578,82 @@ public class FXClass extends Application {
         combo_box1.setLayoutY(45);
         combo_box1.setPrefWidth(150);
         combo_box1.setValue(combo_box1.getItems().get(0));
+        combo_box1.setVisible(false);
         ComboBox combo_box2 = new ComboBox(FXCollections.observableArrayList(listLang));
         combo_box2.setStyle("-fx-background-color: transparent; -fx-text-fill: blue; -fx-font-size: 11pt;");
         combo_box2.setLayoutX(450);
         combo_box2.setLayoutY(45);
         combo_box2.setPrefWidth(150);
+        combo_box2.setVisible(false);
         combo_box2.setValue(combo_box2.getItems().get(1));
         TextArea textArea = new TextArea();
         textArea.setLayoutX(10);
         textArea.setLayoutY(100);
         textArea.setPrefSize(620, 202);
         textArea.setStyle("-fx-background-color: transparent; -fx-font-size: 20pt;");
+        textArea.setVisible(false);
         Text text = new Text();
         text.setLayoutX(22);
         text.setLayoutY(365);
         text.setWrappingWidth(600);
         text.setStyle("-fx-text-fill: white; -fx-font-size: 20pt;");
+        text.setVisible(false);
         Alert alert = new Alert(Alert.AlertType.WARNING);
         //text.setText("TEXT");
         /**textArea.textProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
-                try {
-                    System.out.println(api.translate("en", "vi", t1));
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
+        @Override
+        public void changed(ObservableValue<? extends String> observableValue, String s, String t1) {
+        try {
+        System.out.println(api.translate("en", "vi", t1));
+        }
+        catch (Exception e) {
+        e.printStackTrace();
+        }
+        }
         });*/
+        buttonTranslate.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if(!dich) {
+                    dich = true;
+                    root.setBackground(bg2);
+                    combo_box1.setVisible(true);
+                    combo_box2.setVisible(true);
+                    speakerBt1.setVisible(true);
+                    speakerBt2.setVisible(true);
+                    swapBt.setVisible(true);
+                    textArea.setVisible(true);
+                    text.setVisible(true);
+                    transBt.setVisible(true);
+                    field.setVisible(false);
+                    micIcon.setVisible(false);
+                    listView.setVisible(false);
+                    buttonHist.setVisible(false);
+                    sIcon.setVisible(false);
+                    button.setVisible(false);
+                }
+                else {
+                    dich = false;
+                    root.setBackground(bg1);
+                    combo_box1.setVisible(false);
+                    combo_box2.setVisible(false);
+                    speakerBt1.setVisible(false);
+                    speakerBt2.setVisible(false);
+                    swapBt.setVisible(false);
+                    textArea.setVisible(false);
+                    text.setVisible(false);
+                    transBt.setVisible(false);
+                    field.setVisible(true);
+                    micIcon.setVisible(true);
+                    //listView.setVisible(true);
+                    buttonHist.setVisible(true);
+                    sIcon.setVisible(true);
+                    button.setVisible(true);
+                }
+
+            }
+        });
+
         swapBt.setOnMouseClicked(new EventHandler<MouseEvent>() {
             @Override
             public void handle(MouseEvent event) {
@@ -620,19 +708,22 @@ public class FXClass extends Application {
                 }
             }
         });
-
-        root.getChildren().addAll(speakerBt1, speakerBt2, swapBt, combo_box1, combo_box2, textArea, text, transBt);
+        root.getChildren().addAll(
+                field ,button, buttonHist, sIcon, micIcon,  buttonTranslate
+                , webView, buttonSpeaker, listView, htmlEditor
+                , buttonFix, buttonAdd, buttonOk, buttonCancel
+                , newWordText, buttonBack1, speakerBt1, speakerBt2
+                , swapBt, combo_box1, combo_box2, textArea, text, transBt, sw
+        );
         return root;
     }
-
     public static void main(String[] args) {
         launch(args);
-        //dm.writeFile();
     }
     @Override
     public void start(Stage primaryStage) throws Exception {
-        dm.insertFromFile();
-        primaryStage.setScene(new Scene(scene2()));
+        dm.insertFromFile("D:\\BTL_Dictionary\\src\\main\\resources\\V_E.txt");
+        primaryStage.setScene(new Scene(scene1()));
         primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
             @Override
             public void handle(WindowEvent windowEvent) {
